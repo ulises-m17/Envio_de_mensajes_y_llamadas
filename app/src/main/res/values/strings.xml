@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Mensaje_de_texto_y_llamadas</string>
+    <string name="llamadas">Llamar</string>
+    <string name="mensaje">Envia mensaje</string>
+    <string name="escribe_mensaje">Ingresa tu mensaje aquí</string>
+    <string name="numero">Numero de contacto</string>
+    <string name="aceptar">Aceptar</string>
+</resources>
