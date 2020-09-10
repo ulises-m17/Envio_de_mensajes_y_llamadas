@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,15 +38,20 @@ EditText txt_numero,txt_mensaje;
 
     }
 
+public void resetear(){
+       txt_numero.setText("");
+       txt_mensaje.setText("");
+}
 
     public void onClick(View view){
         // validamos que radio buton se selecciona de acuerdo a su id
         switch (view.getId()){
             case R.id.id_rbMensaje:
-
+resetear();
                 txt_mensaje.setEnabled(true);
                 txt_numero.setEnabled(true);
-                    
+                resetear();
+
                 // al hacer clic en el radioButton de mensaje pedira permiso para poder enviar los mensajes
                 int permiso= ContextCompat.checkSelfPermission(this,Manifest.permission.SEND_SMS);
                // si la variable permiso es diferente de aceptado entonces mostrara un mensaje
@@ -60,7 +66,8 @@ EditText txt_numero,txt_mensaje;
 
             case R.id.id_rbLlamada:
                 txt_numero.setEnabled(true);
-
+                txt_mensaje.setEnabled(false);
+                resetear();
                 break;
 
         }
@@ -74,21 +81,36 @@ EditText txt_numero,txt_mensaje;
 
         if (rb_mensaje.isChecked()){
 
-           if (!mensaje.isEmpty() && !numero.isEmpty()){
+           if (!mensaje.isEmpty() && !numero.isEmpty() && numero.length()==10){
 
                // creamos instancia para hacer uso de la aplicacion por defecto para mandar mensajes.
                 // le pasamos por parametro el numero y el mensaje obtenido de las cajas de texto.
 
                SmsManager men= SmsManager.getDefault();
                men.sendTextMessage(numero,null,mensaje,null,null);
+               Toast.makeText(this,"Mensaje enviado",Toast.LENGTH_SHORT).show();
+                resetear();
 
+           }else{
+               Toast.makeText(this,"Completa todo los campos",Toast.LENGTH_SHORT).show();
            }
 
            }else if (rb_llamada.isChecked()){
 
-            if (!numero.isEmpty()){
+            if (!numero.isEmpty() && numero.length()==10 ){
 
-                Toast.makeText(this,"llamada",Toast.LENGTH_SHORT).show();
+                // Creamos una instancia a intent para llamar al intent donde se realizan las llamadas y le pasamos el numero
+
+                Intent inten = new Intent(Intent.ACTION_CALL, Uri.parse("tel:"+numero));
+
+                // si concedimos el permiso para hacer la llamada nos iniciara la actividad de llamada saliente
+
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+                    return;
+                startActivity(inten);
+               resetear();
+            }else {
+                Toast.makeText(this,"Debes ingresar un numero valido",Toast.LENGTH_SHORT).show();
             }
        }
     }
